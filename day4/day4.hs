@@ -12,6 +12,10 @@ main = do
 
   print solution1
 
+  let solution2 = solve2 $ sortRanges $ toRanges $ toNums $ parseRangeString $ parsePairs input
+
+  print solution2
+
   where
     parsePairs :: [String] -> [[String]]
     parsePairs = map (\x -> splitOn "," x)
@@ -39,5 +43,12 @@ main = do
     solve1 = foldl' (\acc [head, tail] -> 
       if (length $ intersect head tail) == length head 
       then acc + 1 
+      else acc
+      ) 0
+
+    solve2 :: [[[Int]]] -> Int
+    solve2 = foldl' (\acc [head, tail] ->
+      if (length $ intersect head tail) > 0
+      then acc + 1
       else acc
       ) 0
