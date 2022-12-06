@@ -9,8 +9,10 @@ main = do
   let input = init s
 
   let solution1 = 4 + (length $ takeWhile (\x -> not $ checkUniques x) $ splitStrings 4 input)
+  let solution2 = 14 + (length $ takeWhile (\x -> not $ checkUniques x) $ splitStrings 14 input)
 
   print solution1
+  print solution2
 
   where
     checkUniques :: String -> Bool
