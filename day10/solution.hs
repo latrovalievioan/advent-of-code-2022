@@ -1,16 +1,57 @@
 import System.IO  
-import Data.List.Split
+import Data.List
+import Debug.Trace
+
+dbg :: Show a => a -> a
+dbg x = trace (show x) x
 
 main :: IO ()
 main = do
-  s <- splitOn "\n" <$> readFile "input1"
+  s <- lines <$> readFile "input1"
   let input = map(\x -> words x) (init s)
 
-  let solution1 = solve1 0 input 220 0 (1, [])
+  let startingCanvas = ["........................................",
+                        "........................................",
+                        "........................................",
+                        "........................................",
+                        "........................................",
+                        "........................................"]
 
-  print solution1
+  -- let solution1 = solve1 0 input 220 0 (1, [])
+
+  -- print solution1
+  
+  let (line1, next) = drawLine input 0 39 (1, []) "........................................"
+  let (line2, next2) = drawLine input 40 79 next "........................................"
+  let (line3, next3) = drawLine input 80 119 next2 "........................................"
+  let (line4, next4) = drawLine input 120 159 next3 "........................................"
+  let (line5, next5) = drawLine input 160 219 next4 "........................................"
+
+  print line1
+  print line2
+  print line3
+  print line4
+  print line5
+
+
 
   where
+    drawLine :: [[String]] -> Int -> Int -> (Int, [(Int, Int)]) -> String -> (String, (Int, [(Int, Int)]))
+    drawLine instructions i to (spritePosition, queue) line
+      | i > to = (line, (spritePosition, queue))
+      | otherwise = drawLine instructions (i + 1) to  (cycle i instructions (spritePosition, queue)) (updateLine (i - 1) spritePosition line)
+
+    updateLine :: Int -> Int -> String -> String
+    updateLine crt spritePosition line
+      | absoluteCrt == absoluteSpritePosition - 1 || absoluteCrt == absoluteSpritePosition || absoluteCrt == absoluteSpritePosition + 1 = replace absoluteCrt '#' line
+      | otherwise = line
+        where
+          absoluteSpritePosition = spritePosition `mod` 40
+          absoluteCrt = crt `mod` 40
+  
+    replace :: Int -> Char -> String -> String
+    replace pos newVal list = take pos list ++ newVal : drop (pos+1) list
+
     solve1 :: Int -> [[String]] -> Int -> Int -> (Int, [(Int, Int)]) -> Int
     solve1 endValue instructions to i (value, queue)
       | i > to = endValue
