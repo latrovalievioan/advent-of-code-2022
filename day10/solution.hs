@@ -1,10 +1,10 @@
 import System.IO  
-import Data.List.Split
+import Data.List
 
 main :: IO ()
 main = do
-  s <- splitOn "\n" <$> readFile "input1"
-  let input = map(\x -> words x) (init s)
+  s <- lines <$> readFile "input1"
+  let input = map words $ init s
 
   let solution1 = solve1 0 input 220 0 (1, [])
 
@@ -14,7 +14,7 @@ main = do
     solve1 :: Int -> [[String]] -> Int -> Int -> (Int, [(Int, Int)]) -> Int
     solve1 endValue instructions to i (value, queue)
       | i > to = endValue
-      | i == 20 || i == 60 || i == 100 || i == 140 || i == 180 || i == 220 =
+      | i `mod` 40 == 20 =
         solve1 (endValue + i * value) instructions to (i + 1) (cycle i instructions (value, queue))
       | otherwise = solve1 endValue instructions to (i + 1) (cycle i instructions (value, queue))
 
