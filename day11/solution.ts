@@ -2,6 +2,7 @@ type Monkey = {
   startingItems: number[];
   operation: (x: number) => number;
   test: (x: number) => boolean;
+  numTest: number;
   to: {
     yes: number;
     no: number;
@@ -14,6 +15,7 @@ const testMonkeys: Monkey[] = [
     startingItems: [79, 98],
     operation: (old: number) => old * 19,
     test: (x: number) => x % 23 == 0,
+    numTest: 23,
     to: {
       yes: 2,
       no: 3,
@@ -24,6 +26,7 @@ const testMonkeys: Monkey[] = [
     startingItems: [54, 65, 75, 74],
     operation: (old: number) => old + 6,
     test: (x: number) => x % 19 == 0,
+    numTest: 19,
     to: {
       yes: 2,
       no: 0,
@@ -34,6 +37,7 @@ const testMonkeys: Monkey[] = [
     startingItems: [79, 60, 97],
     operation: (old: number) => old * old,
     test: (x: number) => x % 13 == 0,
+    numTest: 13,
     to: {
       yes: 1,
       no: 3,
@@ -44,6 +48,7 @@ const testMonkeys: Monkey[] = [
     startingItems: [74],
     operation: (old: number) => old + 3,
     test: (x: number) => x % 17 == 0,
+    numTest: 17,
     to: {
       yes: 0,
       no: 1,
@@ -57,6 +62,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [73, 77],
     operation: (old: number) => old * 5,
     test: (x: number) => x % 11 == 0,
+    numTest: 11,
     to: {
       yes: 6,
       no: 5,
@@ -67,6 +73,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [57, 88, 80],
     operation: (old: number) => old + 5,
     test: (x: number) => x % 19 == 0,
+    numTest: 19,
     to: {
       yes: 6,
       no: 0,
@@ -77,6 +84,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [61, 81, 84, 69, 77, 88],
     operation: (old: number) => old * 19,
     test: (x: number) => x % 5 == 0,
+    numTest: 5,
     to: {
       yes: 3,
       no: 1,
@@ -87,6 +95,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [78, 89, 71, 60, 81, 84, 87, 75],
     operation: (old: number) => old + 7,
     test: (x: number) => x % 3 == 0,
+    numTest: 3,
     to: {
       yes: 1,
       no: 0,
@@ -97,6 +106,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [60, 76, 90, 63, 86, 87, 89],
     operation: (old: number) => old + 2,
     test: (x: number) => x % 13 == 0,
+    numTest: 13,
     to: {
       yes: 2,
       no: 7,
@@ -107,6 +117,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [88],
     operation: (old: number) => old + 1,
     test: (x: number) => x % 17 == 0,
+    numTest: 17,
     to: {
       yes: 4,
       no: 7,
@@ -117,6 +128,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [84, 98, 78, 85],
     operation: (old: number) => old * old,
     test: (x: number) => x % 7 == 0,
+    numTest: 7,
     to: {
       yes: 5,
       no: 4,
@@ -127,6 +139,7 @@ const realMonkeys: Monkey[] = [
     startingItems: [98, 89, 78, 73, 71],
     operation: (old: number) => old + 4,
     test: (x: number) => x % 2 == 0,
+    numTest: 2,
     to: {
       yes: 3,
       no: 2,
@@ -135,12 +148,14 @@ const realMonkeys: Monkey[] = [
   },
 ]
 
-const inspect = (worryLevel: number, operation: (old: number) => number): number => Math.floor(operation(worryLevel) / 3)
+const modByThis = realMonkeys.reduce((a: number,c: Monkey) => a * c.numTest, 1);
+
+const inspect = (worryLevel: number, operation: (old: number) => number): number => (operation(worryLevel) % modByThis)
 
 const turn = (monkey: Monkey): void => {
   while(monkey.startingItems.length){
     monkey.inspectCount++
-    const itemToThrow = inspect(monkey.startingItems.shift(), monkey.operation)
+    const itemToThrow = inspect(monkey.startingItems.shift(), monkey.operation) 
     const receivingMonkeyIndex = monkey.test(itemToThrow) ? monkey.to.yes : monkey.to.no
     realMonkeys[receivingMonkeyIndex].startingItems.push(itemToThrow)
   }
@@ -152,7 +167,7 @@ const round = (monkeys: Monkey[]) => {
   })
 }
 
-for(let i = 0; i < 20; i++){
+for(let i = 0; i < 10000; i++){
   round(realMonkeys)
 }
 
