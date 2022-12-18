@@ -1,4 +1,4 @@
-const packetPairs = require(`fs`)
+const packetPairs: any[] = require(`fs`)
   .readFileSync(`./input1`, `utf-8`)
   .split('\n\n')
   .map((x: string) => x.split('\n'))
@@ -35,3 +35,8 @@ packetPairs.forEach((p: string[], i: number) => {
 })
 
 console.log(rightOrderIndexes.reduce((a,c) => a + c, 0));
+
+packetPairs.push([[2]])
+packetPairs.push([[6]])
+const sortedStrings = packetPairs.flat(1).sort((a,b) => compare(a,b)).map(x => `${x}`)
+console.log((sortedStrings.indexOf("2") + 1) * (sortedStrings.indexOf("6") + 1))
