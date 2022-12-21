@@ -58,6 +58,32 @@ const getUnvisitedNeighbors = (r: number, c: number, visited: boolean[][]): numb
   return neighbors.filter(([r, c]) => !visited[r][c]);
 };
 
+const getUnvisitedNeighbors2 = (r: number, c: number, visited: boolean[][]): number[][] => {
+  const neighbors: number[][] = [];
+
+  const currElevation =
+    r === sR && c === sC
+      ? 'a'.charCodeAt(0)
+      : r === eR && c === eC
+        ? 'z'.charCodeAt(0)
+        : matrix_[r][c].charCodeAt(0);
+
+  if(matrix_[r - 1] && (matrix_[r - 1][c].charCodeAt(0) >= currElevation - 1))
+    neighbors.push([r - 1, c])
+
+  if(matrix_[r + 1] && (matrix_[r + 1][c].charCodeAt(0) >= currElevation - 1))
+    neighbors.push([r + 1, c])
+
+  if(matrix_[r][c - 1] && matrix_[r][c - 1].charCodeAt(0) >= currElevation - 1)
+    neighbors.push([r, c - 1])
+
+  if(matrix_[r][c + 1] && matrix_[r][c + 1].charCodeAt(0) >= currElevation - 1)
+    neighbors.push([r, c + 1])
+
+  return neighbors.filter(([r, c]) => !visited[r][c]);
+};
+
+
 console.log(eR, eC);
 
 const bfs = () => {
@@ -82,6 +108,30 @@ const bfs = () => {
   }
   // console.log(x)
 }
+
+const bfs2 = () => {
+  const visited = matrix_.map(x => x.map(_ => false));
+  const queue = [[eR, eC, 0]];
+  visited[eR][eC] = true
+
+  while(queue.length){
+    const [r, c, d] = queue.pop();
+
+    if(matrix_[r][c] === 'a') {
+      return d
+    };
+
+    const neighbors = getUnvisitedNeighbors2(r, c, visited)
+
+    neighbors.forEach((n: number[]) => {
+      visited[n[0]][n[1]] = true
+      queue.unshift([...n, d + 1])
+    })
+    // render(visited);
+  }
+  // console.log(x)
+}
+
 const visited = matrix_.map(x => x.map(_ => false));
 
-console.log(bfs());
+console.log(bfs2());
